@@ -1,36 +1,36 @@
 package com.example.demo.config;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 @Configuration
 public class CorsConfig {
+
+    @Value("${cors.allowed-origins}")
+    private String allowedOriginsRaw;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Orígenes permitidos (tu frontend)
-        config.setAllowedOrigins(List.of(
-                "http://localhost:8080/",  // Para desarrollo local
-                "https://tu-frontend.onrender.com"  // ← cámbialo por tu frontend real cuando lo despliegues
-        ));
+        // Divide la cadena por comas y limpia espacios
+        List<String> origins = List.of(allowedOriginsRaw.split(","))
+                .stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
 
-        // Métodos HTTP permitidos
+        config.setAllowedOrigins(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-
-        // Headers permitidos (todos)
         config.setAllowedHeaders(List.of("*"));
-
-        // Permite enviar credenciales (token, cookies)
         config.setAllowCredentials(true);
 
-        // Aplica esta configuración a todas las rutas
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
