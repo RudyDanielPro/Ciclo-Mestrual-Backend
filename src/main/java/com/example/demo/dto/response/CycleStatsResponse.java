@@ -10,15 +10,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CycleStatsResponse {
+
+    // ===== Último ciclo =====
     private LocalDate lastCycleStart;
     private LocalDate lastCycleEnd;
-    private Long lastCycleDuration;
+    private Integer lastCycleDuration;
 
-    private Double averageCycleDuration;      // promedio entre inicios
-    private Double averagePeriodDuration;     // promedio de días de sangrado
+    // ===== Promedios =====
+    private Integer averageCycleDuration;    // promedio entre inicios
+    private Integer averagePeriodDuration;   // promedio de sangrado
 
+    // ===== Predicción próximo inicio =====
     private LocalDate predictedNextStartRangeStart;
     private LocalDate predictedNextStartRangeEnd;
     private LocalDate mostLikelyNextStartDate;
+
+    // ===== Predicción próximo fin =====
+    private LocalDate predictedNextEndRangeStart;
+    private LocalDate predictedNextEndRangeEnd;
     private LocalDate mostLikelyNextEndDate;
 }
