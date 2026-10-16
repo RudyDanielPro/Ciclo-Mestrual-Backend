@@ -45,8 +45,14 @@ public class AuthServiceImpl implements AuthService {
         // Generar token
         String token = jwtService.generateToken(userDetails);
 
-        // Devolver respuesta
-        return new AuthResponse(token, user.getUsername(), user.getName(), user.getRole());
+        // Devolver respuesta (ahora con id)
+        return new AuthResponse(
+                user.getId(),
+                token,
+                user.getUsername(),
+                user.getName(),
+                user.getRole()
+        );
     }
 
     // ==================== Login ====================
@@ -61,17 +67,22 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        // Si llegamos aquí, las credenciales son correctas.
-        // Cargamos el usuario desde la BD
+        // Cargar el UserDetails
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getIdentifier());
 
-        // Buscamos al usuario para obtener name y role
+        // Buscar al usuario para obtener id, name y role
         User user = userService.findByUsername(userDetails.getUsername());
 
         // Generar token
         String token = jwtService.generateToken(userDetails);
 
-        // Devolver respuesta
-        return new AuthResponse(token, user.getUsername(), user.getName(), user.getRole());
+        // Devolver respuesta (ahora con id)
+        return new AuthResponse(
+                user.getId(),
+                token,
+                user.getUsername(),
+                user.getName(),
+                user.getRole()
+        );
     }
 }

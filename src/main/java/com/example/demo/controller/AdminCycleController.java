@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,13 @@ public class AdminCycleController {
     public AdminCycleController(CycleService cycleService, UserService userService) {
         this.cycleService = cycleService;
         this.userService = userService;
+    }
+
+    // ==================== Conteo de ciclos por usuario ====================
+
+    @GetMapping("/counts")
+    public ResponseEntity<Map<Long, Long>> getCountsByUser() {
+        return ResponseEntity.ok(cycleService.getCycleCountByUser());
     }
 
     // ==================== Listar ciclos de un usuario ====================

@@ -2,7 +2,9 @@ package com.example.demo.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -118,6 +120,19 @@ public class CycleServiceImpl implements CycleService {
         return cycle;
     }
 
+    // ==================== Conteo por usuario (admin) ====================
+
+    @Override
+    public Map<Long, Long> getCycleCountByUser() {
+        Map<Long, Long> result = new HashMap<>();
+        for (Object[] row : cycleRepository.countCyclesByUser()) {
+            Long userId = ((Number) row[0]).longValue();
+            Long count = ((Number) row[1]).longValue();
+            result.put(userId, count);
+        }
+        return result;
+    }
+
     // ==================== Estadísticas ====================
 
     @Override
@@ -157,8 +172,7 @@ public class CycleServiceImpl implements CycleService {
             );
         }
 
-        // ===== Recopilar intervalos entre inicios (solo con ciclos ordenados por fecha asc) =====
-        // Para eso necesitamos la lista invertida (más antiguo primero)
+        // ===== Recopilar intervalos entre inicios =====
         List<Cycle> ordenadosAsc = new ArrayList<>(allCycles);
         ordenadosAsc.sort((a, b) -> a.getStartDate().compareTo(b.getStartDate()));
 
@@ -171,7 +185,7 @@ public class CycleServiceImpl implements CycleService {
             intervalos.add(diff);
         }
 
-        // ===== Promedio de intervalo (si hay al menos 1 intervalo) =====
+        // ===== Promedio de intervalo =====
         double promedioIntervalo = 0;
         double desviacionIntervalo = 0;
         if (!intervalos.isEmpty()) {
@@ -180,7 +194,7 @@ public class CycleServiceImpl implements CycleService {
             stats.setAverageCycleDuration(CycleCalculator.redondear(promedioIntervalo));
         }
 
-        // ===== Recopilar duraciones de sangrado (solo ciclos cerrados) =====
+        // ===== Recopilar duraciones de sangrado =====
         List<Long> duracionesSangrado = new ArrayList<>();
         for (Cycle c : allCycles) {
             if (c.getEndDate() != null) {
@@ -197,9 +211,8 @@ public class CycleServiceImpl implements CycleService {
             stats.setAveragePeriodDuration(CycleCalculator.redondear(promedioSangrado));
         }
 
-        // ===== Predicción del próximo inicio (requiere al menos 1 intervalo) =====
+        // ===== Predicción del próximo inicio =====
         if (!intervalos.isEmpty()) {
-            // El último inicio que tenemos registrado (ya sea activo o cerrado)
             LocalDate ultimoInicio = ordenadosAsc.get(ordenadosAsc.size() - 1).getStartDate();
 
             double desvMin = CycleCalculator.desviacionConMinimo(desviacionIntervalo);

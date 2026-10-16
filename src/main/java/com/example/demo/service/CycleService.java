@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import com.example.demo.dto.request.CycleRequest;
 import com.example.demo.dto.request.UpdateCycleRequest;
@@ -23,4 +24,7 @@ public interface CycleService {
 
     // ===== Estadísticas =====
     CycleStatsResponse getStats(Long userId, Long requesterId, Role requesterRole);
+
+    // NUEVO: conteo de ciclos por usuario
+    Map<Long, Long> getCycleCountByUser();
 }

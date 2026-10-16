@@ -93,12 +93,13 @@ public class UserController {
     }
 
     private UserResponse toResponse(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getName(),
-                user.getRole()
-        );
-    }
+    return new UserResponse(
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getName(),
+            user.getRole(),
+            user.getCreatedAt()  
+    );
+}
 }
